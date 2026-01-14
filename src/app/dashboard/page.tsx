@@ -17,6 +17,7 @@ import {
   ArrowTrendingUpIcon,
   SparklesIcon,
   ArrowRightIcon,
+  TvIcon,
 } from '@heroicons/react/24/outline';
 
 interface Stats {
@@ -141,6 +142,15 @@ export default function DashboardPage() {
       permission: 'reports.view',
     },
     {
+      name: 'Order Display',
+      description: 'Customer-facing order status display',
+      href: '/display',
+      icon: TvIcon,
+      gradient: 'from-slate-500 to-gray-600',
+      bgGradient: 'from-slate-50 to-gray-50',
+      permission: null,
+    },
+    {
       name: 'Manage Users',
       description: 'Control user access and permissions',
       href: '/users',
@@ -250,7 +260,7 @@ export default function DashboardPage() {
               <div className="p-6">
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
                   {quickActions.map((action, index) => {
-                    if (!hasPermission(action.permission)) return null;
+                    if (action.permission && !hasPermission(action.permission)) return null;
                     
                     return (
                       <a

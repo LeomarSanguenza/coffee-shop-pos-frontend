@@ -15,6 +15,7 @@ import {
   ChartBarIcon,
   CogIcon,
   ArrowRightOnRectangleIcon,
+  TvIcon,
 } from '@heroicons/react/24/outline';
 
 interface LayoutProps {
@@ -24,6 +25,7 @@ interface LayoutProps {
 const navigation = [
   { name: 'Dashboard', href: '/dashboard', icon: HomeIcon, permission: null },
   { name: 'POS', href: '/pos', icon: ShoppingCartIcon, permission: 'pos.access' },
+  { name: 'Order Display', href: '/display', icon: TvIcon, permission: null },
   { name: 'Inventory', href: '/inventory', icon: ChartBarIcon, permission: 'products.view' },
   { name: 'Products', href: '/products', icon: CubeIcon, permission: 'products.view' },
   { name: 'Categories', href: '/categories', icon: TagIcon, permission: 'categories.view' },
