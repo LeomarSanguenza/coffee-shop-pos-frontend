@@ -7,40 +7,32 @@ import { useAuth } from '@/contexts/AuthContext';
 import {
   Bars3Icon,
   XMarkIcon,
-  HomeIcon,
-  ShoppingCartIcon,
-  CubeIcon,
-  TagIcon,
+  BuildingOfficeIcon,
   UsersIcon,
   ChartBarIcon,
   CogIcon,
   ArrowRightOnRectangleIcon,
-  TvIcon,
-  BuildingOfficeIcon,
+  GlobeAltIcon,
+  BanknotesIcon,
 } from '@heroicons/react/24/outline';
 
-interface LayoutProps {
+interface SystemAdminLayoutProps {
   children: React.ReactNode;
 }
 
 const navigation = [
-  { name: 'Dashboard', href: '/dashboard', icon: HomeIcon, permission: null },
-  { name: 'System Admin', href: '/system-admin', icon: CogIcon, permission: 'branches.view' },
-  { name: 'Branches', href: '/branches', icon: BuildingOfficeIcon, permission: 'branches.view' },
-  { name: 'POS', href: '/pos', icon: ShoppingCartIcon, permission: 'pos.access' },
-  { name: 'Order Display', href: '/display', icon: TvIcon, permission: null },
-  { name: 'Inventory', href: '/inventory', icon: ChartBarIcon, permission: 'products.view' },
-  { name: 'Products', href: '/products', icon: CubeIcon, permission: 'products.view' },
-  { name: 'Categories', href: '/categories', icon: TagIcon, permission: 'categories.view' },
-  { name: 'Orders', href: '/orders', icon: ShoppingCartIcon, permission: 'orders.view' },
-  { name: 'Users', href: '/users', icon: UsersIcon, permission: 'users.view' },
-  { name: 'Reports', href: '/reports', icon: ChartBarIcon, permission: 'reports.view' },
-  { name: 'Settings', href: '/settings', icon: CogIcon, permission: 'settings.view' },
+  { name: 'System Overview', href: '/system-admin', icon: ChartBarIcon },
+  { name: 'Branch Management', href: '/system-admin/branches', icon: BuildingOfficeIcon },
+  { name: 'User Management', href: '/system-admin/users', icon: UsersIcon },
+  { name: 'Global Settings', href: '/system-admin/settings', icon: CogIcon },
+  { name: 'System Reports', href: '/system-admin/reports', icon: BanknotesIcon },
+  { name: 'Security & Permissions', href: '/system-admin/security', icon: CogIcon },
+  { name: 'API Management', href: '/system-admin/api', icon: GlobeAltIcon },
 ];
 
-export default function Layout({ children }: LayoutProps) {
+export default function SystemAdminLayout({ children }: SystemAdminLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const { user, logout, hasPermission } = useAuth();
+  const { user, logout } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
 
@@ -49,27 +41,48 @@ export default function Layout({ children }: LayoutProps) {
     router.push('/login');
   };
 
-  const filteredNavigation = navigation.filter(item => 
-    !item.permission || hasPermission(item.permission)
-  );
+  // Check if user is super admin
+  const isSuperAdmin = user?.roles?.some((role: any) => role.name === 'super_admin');
+
+  if (!isSuperAdmin) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="max-w-md w-full bg-white shadow-lg rounded-lg p-6">
+          <div className="text-center">
+            <CogIcon className="mx-auto h-12 w-12 text-red-400" />
+            <h2 className="mt-4 text-xl font-bold text-gray-900">Access Denied</h2>
+            <p className="mt-2 text-gray-600">
+              You need super admin privileges to access the system administration panel.
+            </p>
+            <button
+              onClick={() => router.push('/dashboard')}
+              className="mt-4 w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors"
+            >
+              Return to Dashboard
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Mobile sidebar */}
       <div className={`fixed inset-0 z-50 lg:hidden ${sidebarOpen ? '' : 'hidden'}`}>
         <div className="fixed inset-0 bg-gray-600 bg-opacity-75" onClick={() => setSidebarOpen(false)} />
-        <div className="fixed inset-y-0 left-0 flex w-64 flex-col bg-white">
+        <div className="fixed inset-y-0 left-0 flex w-64 flex-col bg-gray-900">
           <div className="flex h-16 items-center justify-between px-4">
-            <h1 className="text-xl font-bold text-gray-900">Coffee Shop POS</h1>
+            <h1 className="text-xl font-bold text-white">System Admin</h1>
             <button
               onClick={() => setSidebarOpen(false)}
-              className="text-gray-400 hover:text-gray-600"
+              className="text-gray-400 hover:text-white"
             >
               <XMarkIcon className="h-6 w-6" />
             </button>
           </div>
           <nav className="flex-1 space-y-1 px-2 py-4">
-            {filteredNavigation.map((item) => {
+            {navigation.map((item) => {
               const isActive = pathname === item.href;
               return (
                 <Link
@@ -77,8 +90,8 @@ export default function Layout({ children }: LayoutProps) {
                   href={item.href}
                   className={`group flex items-center px-2 py-2 text-sm font-medium rounded-md ${
                     isActive
-                      ? 'bg-gray-100 text-gray-900'
-                      : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                      ? 'bg-gray-800 text-white'
+                      : 'text-gray-300 hover:bg-gray-700 hover:text-white'
                   }`}
                   onClick={() => setSidebarOpen(false)}
                 >
@@ -93,12 +106,13 @@ export default function Layout({ children }: LayoutProps) {
 
       {/* Desktop sidebar */}
       <div className="hidden lg:fixed lg:inset-y-0 lg:flex lg:w-64 lg:flex-col">
-        <div className="flex flex-col flex-grow bg-white border-r border-gray-200">
+        <div className="flex flex-col flex-grow bg-gray-900">
           <div className="flex h-16 items-center px-4">
-            <h1 className="text-xl font-bold text-gray-900">Coffee Shop POS</h1>
+            <CogIcon className="h-8 w-8 text-blue-400 mr-3" />
+            <h1 className="text-xl font-bold text-white">System Admin</h1>
           </div>
           <nav className="flex-1 space-y-1 px-2 py-4">
-            {filteredNavigation.map((item) => {
+            {navigation.map((item) => {
               const isActive = pathname === item.href;
               return (
                 <Link
@@ -106,8 +120,8 @@ export default function Layout({ children }: LayoutProps) {
                   href={item.href}
                   className={`group flex items-center px-2 py-2 text-sm font-medium rounded-md ${
                     isActive
-                      ? 'bg-gray-100 text-gray-900'
-                      : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                      ? 'bg-gray-800 text-white'
+                      : 'text-gray-300 hover:bg-gray-700 hover:text-white'
                   }`}
                 >
                   <item.icon className="mr-3 h-6 w-6" />
@@ -116,6 +130,23 @@ export default function Layout({ children }: LayoutProps) {
               );
             })}
           </nav>
+          
+          {/* User info at bottom */}
+          <div className="flex-shrink-0 p-4 border-t border-gray-700">
+            <div className="flex items-center">
+              <div className="flex-shrink-0">
+                <div className="h-8 w-8 rounded-full bg-blue-600 flex items-center justify-center">
+                  <span className="text-sm font-medium text-white">
+                    {user?.name?.charAt(0).toUpperCase()}
+                  </span>
+                </div>
+              </div>
+              <div className="ml-3 flex-1">
+                <p className="text-sm font-medium text-white">{user?.name}</p>
+                <p className="text-xs text-gray-400">Super Admin</p>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -132,7 +163,12 @@ export default function Layout({ children }: LayoutProps) {
           </button>
 
           <div className="flex flex-1 gap-x-4 self-stretch lg:gap-x-6">
-            <div className="flex flex-1"></div>
+            <div className="flex flex-1 items-center">
+              <div className="flex items-center space-x-2">
+                <div className="h-2 w-2 bg-green-400 rounded-full"></div>
+                <span className="text-sm text-gray-600">System Status: Online</span>
+              </div>
+            </div>
             <div className="flex items-center gap-x-4 lg:gap-x-6">
               <div className="flex items-center gap-x-4">
                 <span className="text-sm font-medium text-gray-700">{user?.name}</span>
