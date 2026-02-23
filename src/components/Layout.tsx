@@ -17,6 +17,7 @@ import {
   ArrowRightOnRectangleIcon,
   TvIcon,
   BuildingOfficeIcon,
+  ChatBubbleLeftRightIcon,
 } from '@heroicons/react/24/outline';
 
 interface LayoutProps {
@@ -29,6 +30,7 @@ const navigation = [
   { name: 'Branches', href: '/branches', icon: BuildingOfficeIcon, permission: 'branches.view' },
   { name: 'POS', href: '/pos', icon: ShoppingCartIcon, permission: 'pos.access' },
   { name: 'Order Display', href: '/display', icon: TvIcon, permission: null },
+  { name: 'AI Assistant', href: '/ai-chat', icon: ChatBubbleLeftRightIcon, permission: null },
   { name: 'Inventory', href: '/inventory', icon: ChartBarIcon, permission: 'products.view' },
   { name: 'Products', href: '/products', icon: CubeIcon, permission: 'products.view' },
   { name: 'Categories', href: '/categories', icon: TagIcon, permission: 'categories.view' },
